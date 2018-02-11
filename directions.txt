@@ -1,0 +1,124 @@
+Objectives
+
+    Practice code reuse and extension
+    Analyze performance of two search algorithms
+    Analyze performance of four algorithms each verifying whether or not two string parameters are anagrams
+    Practice saving test results to a comma separated values (csv) file and graphing multiple data sets on a single graph in Excel
+    Data processing - reading in files
+    Practice commenting code to build an Application Programming Interface (API) - see pep-0257, tut-docstrings
+    Practice formatting strings. - see string.html#formatexamples
+
+    Problem 1   Prime  Factorization of  Fractions - code reuse and extension
+        Say your Lab0 program is named prime.py and is in the same folder as your Lab 2 code along with your Lab1 programs Fraction and MixedFraction, then to import the methods sieve and primeFactors for use in your Fraction class use:
+        from prime import sieve, primeFactors
+        Add a method to your Fraction class that takes no parameters and returns a tuple containing two lists
+            the prime factorization of the numerator and
+            the prime factorization of the denominator 
+        Each list is sorted highest prime factor to lowest prime factor.
+        This method should call sieve with max(self.num, self.den) to minimize the size of the list of primes.  (5 pts.)
+        In the Fraction class add a class method from_string (an alternate constructor) that takes a string such as '9/4', parses this into integers top and bottom, and returns cls(top, bottom) (5 pts.)
+        In the MixedFraction class add a class method from_string (an alternate constructor) that takes a string such as '2 3/4' or '3/4' or '3' and parses this into integers top and bottom, and returns cls(top, bottom) (5 pts.)
+        In the main method or your MixedFractions module, use a list with these four strings:
+            ['330/287', '50 330/287', '1808/287', '27/3']
+        Create MixedFractions using the first three strings and a Fraction using the last string by invoking their respective from_string class methods.
+        Use the accumulator pattern calculate the total then display these four fractions in equation format with the three MixedFractions and the one Fraction on the left and their sum on the right. (5 pts.)
+        Sample output:
+        1 43/287 + 51 43/287 + 6 86/287 + 9/1 = 67 172/287
+        Next, display each fraction and its prime factorization, one to a line. (5 pts.)
+        Sample output:
+        1 43/287 = (11 * 5 * 3 * 2) / (41 * 7)
+        51 43/287 = (367 * 5 * 2 * 2 * 2) / (41 * 7)
+        6 86/287 = (113 * 2 * 2 * 2 * 2) / (41 * 7)
+        9/1 = 3 * 3 
+         
+    Problem 2  TestNumbers -  analyzing  sequential and  binary  searches
+        The function, sequentialSearch, needs a list and the item we are looking for and returns a boolean value as to whether that item is present.
+        The boolean variable found is initialized to False and is assigned the value True if the item is in the list.
+        How well does the sequentialSearch function (linear) compare to binary search, in practice?
+        Below, you will find some code for doing binary search. Note binary search requires the list to be sorted. 
+
+        def betterFind(aList, element):
+         return betterFindHelper(aList, element, 0, len(aList) - 1)
+
+        def betterFindHelper(aList, element, start, end):
+         if start > end:
+             return False
+         middle = (start + end) // 2
+         if aList[middle] == element:
+             return True
+         elif aList[middle] > element:
+             return betterFindHelper(aList, element, start, middle - 1)
+         else:
+             return betterFindHelper(aList, element, middle + 1, end)
+         
+
+            Copy-and-paste both the linear and binary search code into your TestNumbers program and then time how long it takes to search the lists of varying sizes. Print this data to the console and save this data to a comma separated values (.csv) file.          (10 pts.)
+
+            print(" N Linear Sort & Binary Search Binary Search only")
+            for n in range(500000, 5000001, 500000):
+                rList = [random.randrange(0,2*n) for x in range(n)]
+                for i in range(len(rList)):
+                    if i not in rList:
+                        notx = i
+                        break
+                start1 = time.clock()
+                found1 = sequentialSearch(rList, notx)
+                stop1 = time.clock()
+                time1 = stop1 - start1
+                start2 = time.clock()
+                rList.sort()
+                found2 = betterFind(rList, notx)
+                stop2 = time.clock()
+                time2 = stop2 - start2
+                start3 = time.clock()
+                found3 = betterFind(rList, notx)
+                stop3 = time.clock()
+                time3 = stop3 - start3
+                print('{:10,}\t{}\t{}\t{}'.format(n, time1, time2, time3))
+            Open the csv file in Excel, make a graph - highlight the area to be graphed including titles, select Insert/ScatterPlot, then deocrate the graph. Put both scatter plots on the same graph to compare the performance of linear search to binary search.   
+            Be sure to include your .py file, .csv file, and your Excel file in your homework submission.  (10 pts.)
+            Passes pep8. (5 pts)
+            Sample csv file opened in Excel and saved as .xslx, graphs of first three columns only as the binary only would not show on this scale (10 pts.)
+
+    graph
+
+    Problem 3  Big O  of  some  Anagram  algorithms
+        The book gives code for 3 solutions for determining whether two strings are anagrams of each other (Listing 2.6, Listing 2.7, and Listing 2.8).
+        You can download all source code from the book here.
+        In this problem, you will experimentally determine the relative growth rates of each method by running them on strings of length 1,000 up to 10,000 inclusive (step 500)
+        Here’s a random method for generating a random string of length size:
+
+        import string
+
+        import random
+
+        def randomString(size):
+
+            return ''.join(random.choice(string.ascii_lowercase) for x in range(size))
+        Each method will take the longest if it works on an anagram.  Here’s a way to rearrange a string randomly:
+
+        def makeAnagram(s):
+
+            temp = s;
+
+            t = ''
+
+            while temp != '':
+
+                i = random.randrange(0, len(temp))
+
+                t += temp[i]
+
+                temp = temp[:i] + temp[(i+1):]
+
+            return t
+        In a for-loop, vary n from 1,000 to 10,001, step 500.  Create a random string of length n.  Call it s.  Make an anagram of s by calling makeAnagram.  Call it t.  Now time each of the three methods by passing in the parameters s and t.     (15 pts.)
+        Print to the console and to the csv file n, and the time each method takes to determine whether the string t is an anagram of the string s. 
+        Open the csv file in Excel and create one scatter plot graph with the nineteen entries for all three times.  (10 pts.)
+        Create a second scatter plot graph with the nineteen entries for just Sol2 and Sol4 times.  (10 pts.)
+        Include descriptive titles and labels in your two graphs (5 pts.)
+        Passes pep8. (5 pts)
+
+        My graph looks like this:
+
+        graph
